@@ -3,7 +3,7 @@ package middleware
 import (
 	"net/http"
 
-	"github.com/Sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 )
 
 // HandlerFunc converts a handler with an error to a standard handler
