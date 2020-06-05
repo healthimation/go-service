@@ -8,11 +8,8 @@ import (
 	b "github.com/divideandconquer/go-consul-client/src/balancer"
 )
 
-// portName should match the "service" portion of the SRV record, e.g. _http._tcp.profile... or _postgres._tcp.profile-db...
-func NewSRVBalancer(portName string) b.DNS {
-	return &dnsBalancer{
-		portName: portName,
-	}
+func NewSRVBalancer() b.DNS {
+	return &dnsBalancer{}
 }
 
 type dnsBalancer struct {
@@ -20,7 +17,7 @@ type dnsBalancer struct {
 }
 
 func (d *dnsBalancer) FindService(serviceName string) (*b.ServiceLocation, error) {
-	cname, addrs, err := net.LookupSRV(d.portName, "tcp", serviceName)
+	cname, addrs, err := net.LookupSRV("", "", serviceName)
 	if err != nil {
 		return nil, err
 	}
