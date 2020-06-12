@@ -17,7 +17,7 @@ type dnsBalancer struct {
 }
 
 func (d *dnsBalancer) FindService(serviceName string) (*b.ServiceLocation, error) {
-	cname, addrs, err := net.LookupSRV("", "", serviceName)
+	_, addrs, err := net.LookupSRV("", "", serviceName)
 	if err != nil {
 		return nil, err
 	}
@@ -27,7 +27,7 @@ func (d *dnsBalancer) FindService(serviceName string) (*b.ServiceLocation, error
 	}
 
 	return &b.ServiceLocation{
-		URL:  cname,
+		URL:  addrs[0].Target,
 		Port: int(addrs[0].Port), // just take the first one, DNS will return them randomly-ish.  TODO: do actual load balancing
 	}, nil
 
