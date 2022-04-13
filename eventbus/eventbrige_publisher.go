@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-type Config struct {
+type PublisherConfig struct {
 	Source       string
 	EventBusName string
 }
@@ -20,7 +20,7 @@ type eventBridgePublisher struct {
 	eventBusName string
 }
 
-func NewEventBridgePublisher(sess *session.Session, cfg *Config) (Publisher, error) {
+func NewEventBridgePublisher(sess *session.Session, cfg *PublisherConfig) (Publisher, error) {
 	svc := eventbridge.New(sess)
 
 	return &eventBridgePublisher{
