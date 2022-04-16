@@ -21,19 +21,28 @@ type sqsSubscriber struct {
 	maxMsg       int
 	queueUrl     string
 
-	mu       sync.Mutex
-	handlers map[string]MessageHandler
-	keys     []string
+	mu             sync.Mutex
+	handlers       map[string]MessageHandler
+	keys           []string
+	defaultHandler MessageHandler
+}
+
+func defaultHandler(message *Message) {
+	log.Println(message)
 }
 
 func NewSQSSubscriber(sess *session.Session, cfg *SubscriberConfig) (Subscriber, error) {
 	svc := sqs.New(sess)
-
+	if cfg.DefaultHandler == nil {
+		cfg.DefaultHandler = defaultHandler
+	}
 	return &sqsSubscriber{
-		clt:          svc,
-		source:       cfg.Source,
-		eventBusName: cfg.EventBusName,
-		queueUrl:     cfg.QueueUrl,
+		clt:            svc,
+		source:         cfg.Source,
+		eventBusName:   cfg.EventBusName,
+		queueUrl:       cfg.QueueUrl,
+		handlers:       map[string]MessageHandler{},
+		defaultHandler: cfg.DefaultHandler,
 	}, nil
 }
 
@@ -91,7 +100,12 @@ func (c *sqsSubscriber) worker(ctx context.Context, wg *sync.WaitGroup, id int) 
 				log.Printf("worker %d: json umarshal error: %s\n", id, err.Error())
 				continue
 			}
-			go c.handlers[m.Key](m)
+			fn, ok := c.handlers[m.Key]
+			if !ok {
+				c.defaultHandler(m)
+				continue
+			}
+			go fn(m)
 		}
 
 		//if c.config.Type == SyncConsumer {

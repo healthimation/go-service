@@ -10,9 +10,10 @@ type Subscriber interface {
 }
 
 type SubscriberConfig struct {
-	Source       string
-	EventBusName string
-	QueueUrl     string
-	MaxWorker    int
-	MaxMsg       int
+	Source         string
+	EventBusName   string
+	QueueUrl       string
+	MaxWorker      int
+	MaxMsg         int
+	DefaultHandler MessageHandler
 }
