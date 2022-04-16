@@ -34,10 +34,11 @@ func (pub *eventBridgePublisher) Publish(ctx context.Context, msg *Message) erro
 	resp, err := pub.clt.PutEventsWithContext(ctx, &eventbridge.PutEventsInput{
 		Entries: []*eventbridge.PutEventsRequestEntry{
 			{
-				DetailType: aws.String(msg.Key),
-				Detail:     aws.String(string(msg.Body)),
-				Source:     aws.String(pub.source),
-				Time:       aws.Time(time.Now()),
+				EventBusName: aws.String(pub.eventBusName),
+				DetailType:   aws.String(msg.Key),
+				Detail:       aws.String(string(msg.Body)),
+				Source:       aws.String(pub.source),
+				Time:         aws.Time(time.Now()),
 			},
 		},
 	})
