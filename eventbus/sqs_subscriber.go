@@ -25,6 +25,7 @@ type sqsSubscriber struct {
 	handlers       map[string]MessageHandler
 	keys           []string
 	defaultHandler MessageHandler
+	exit           chan bool
 }
 
 func defaultHandler(message *Message) {
@@ -43,6 +44,7 @@ func NewSQSSubscriber(sess *session.Session, cfg *SubscriberConfig) (Subscriber,
 		queueUrl:       cfg.QueueUrl,
 		handlers:       map[string]MessageHandler{},
 		defaultHandler: cfg.DefaultHandler,
+		exit:           make(chan bool),
 	}, nil
 }
 
@@ -62,7 +64,12 @@ func (c *sqsSubscriber) Start(ctx context.Context) error {
 
 	wg.Wait()
 
+	<-c.exit
 	return nil
+}
+
+func (c *sqsSubscriber) Stop() {
+	c.exit <- true
 }
 
 func (c *sqsSubscriber) getQueueUrl(key string) string {

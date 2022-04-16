@@ -7,6 +7,7 @@ import (
 type Subscriber interface {
 	Subscribe(key string, fn MessageHandler)
 	Start(ctx context.Context) error
+	Stop()
 }
 
 type SubscriberConfig struct {
