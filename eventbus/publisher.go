@@ -2,6 +2,11 @@ package eventbus
 
 import (
 	"context"
+	"errors"
+)
+
+var (
+	ErrNilMessage = errors.New("nil message")
 )
 
 type Publisher interface {

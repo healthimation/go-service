@@ -2,6 +2,7 @@ package eventbus
 
 import (
 	"context"
+	"time"
 )
 
 type Subscriber interface {
@@ -17,4 +18,5 @@ type SubscriberConfig struct {
 	MaxWorker      int
 	MaxMsg         int
 	DefaultHandler MessageHandler
+	Timeout        time.Duration
 }

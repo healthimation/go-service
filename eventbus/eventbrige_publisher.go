@@ -2,9 +2,11 @@ package eventbus
 
 import (
 	"context"
+	"encoding/json"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/eventbridge"
+	"github.com/google/uuid"
 	"log"
 	"time"
 )
@@ -31,12 +33,22 @@ func NewEventBridgePublisher(sess *session.Session, cfg *PublisherConfig) (Publi
 }
 
 func (pub *eventBridgePublisher) Publish(ctx context.Context, msg *Message) error {
+	if msg == nil {
+		return ErrNilMessage
+	}
+	if msg.ID == "" {
+		msg.ID = uuid.New().String()
+	}
+	d, err := json.Marshal(msg)
+	if err != nil {
+		return err
+	}
 	resp, err := pub.clt.PutEventsWithContext(ctx, &eventbridge.PutEventsInput{
 		Entries: []*eventbridge.PutEventsRequestEntry{
 			{
 				EventBusName: aws.String(pub.eventBusName),
 				DetailType:   aws.String(msg.Key),
-				Detail:       aws.String(string(msg.Body)),
+				Detail:       aws.String(string(d)),
 				Source:       aws.String(pub.source),
 				Time:         aws.Time(time.Now()),
 			},

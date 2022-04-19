@@ -13,13 +13,11 @@ import (
 )
 
 type sqsSubscriber struct {
-	clt          *sqs.SQS
-	source       string
-	eventBusName string
-	timeout      time.Duration
-	maxWorker    int
-	maxMsg       int
-	queueUrl     string
+	clt       *sqs.SQS
+	timeout   time.Duration
+	maxWorker int
+	maxMsg    int
+	queueUrl  string
 
 	mu             sync.Mutex
 	handlers       map[string]MessageHandler
@@ -28,8 +26,19 @@ type sqsSubscriber struct {
 	exit           chan bool
 }
 
+type SqsMessage struct {
+	Version    string    `json:"version"`
+	ID         string    `json:"id"`
+	DetailType string    `json:"detail-type"`
+	Source     string    `json:"source"`
+	Account    string    `json:"account"`
+	Time       time.Time `json:"time"`
+	Region     string    `json:"region"`
+	Detail     *Message  `json:"detail"`
+}
+
 func defaultHandler(message *Message) {
-	log.Println(message)
+	log.Println("default handler", message)
 }
 
 func NewSQSSubscriber(sess *session.Session, cfg *SubscriberConfig) (Subscriber, error) {
@@ -39,14 +48,13 @@ func NewSQSSubscriber(sess *session.Session, cfg *SubscriberConfig) (Subscriber,
 	}
 	return &sqsSubscriber{
 		clt:            svc,
-		source:         cfg.Source,
-		eventBusName:   cfg.EventBusName,
 		queueUrl:       cfg.QueueUrl,
 		maxMsg:         cfg.MaxMsg,
 		maxWorker:      cfg.MaxWorker,
 		handlers:       map[string]MessageHandler{},
 		defaultHandler: cfg.DefaultHandler,
 		exit:           make(chan bool),
+		timeout:        cfg.Timeout,
 	}, nil
 }
 
@@ -102,20 +110,33 @@ func (c *sqsSubscriber) worker(ctx context.Context, wg *sync.WaitGroup, id int) 
 			continue
 		}
 
-		for _, msg := range msgs {
-			m := &Message{}
-			err = json.Unmarshal([]byte(*msg.Body), m)
-			if err != nil {
-				log.Printf("worker %d: json umarshal error: %s\n", id, err.Error())
-				continue
-			}
-			fn, ok := c.handlers[m.Key]
-			if !ok {
-				c.defaultHandler(m)
-				continue
-			}
-			go fn(m)
+		msgWg := &sync.WaitGroup{}
+		msgWg.Add(len(msgs))
+
+		for _, m1 := range msgs {
+			go func(msg *sqs.Message, w *sync.WaitGroup) {
+				defer w.Done()
+				defer func() {
+					err := c.delete(ctx, c.queueUrl, *msg.ReceiptHandle)
+					if err != nil {
+						log.Printf("worker %d: delete error: %s\n", id, err.Error())
+					}
+				}()
+				sqsMsg := &SqsMessage{}
+				err = json.Unmarshal([]byte(*msg.Body), sqsMsg)
+				if err != nil {
+					log.Printf("worker %d: json unmarshal sqsMessage error: %s\n", id, err.Error())
+					return
+				}
+				fn, ok := c.handlers[sqsMsg.DetailType]
+				if !ok {
+					c.defaultHandler(sqsMsg.Detail)
+					return
+				}
+				fn(sqsMsg.Detail)
+			}(m1, msgWg)
 		}
+		msgWg.Wait()
 
 		//if c.config.Type == SyncConsumer {
 		//	c.sync(ctx, msgs)
