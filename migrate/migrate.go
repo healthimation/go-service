@@ -24,5 +24,9 @@ func RunMigrations(dbUrl string, migrationsPath string) error {
 	if err != nil {
 		return err
 	}
-	return m.Up() // or m.Step(2) if you want to explicitly set the number of migrations to run
+	err = m.Up() // or m.Step(2) if you want to explicitly set the number of migrations to run
+	if err == migrate.ErrNoChange {
+		return nil
+	}
+	return err
 }
