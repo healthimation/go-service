@@ -43,7 +43,7 @@ func (d *k8sBalancer) GetHttpUrl(serviceName string, useTLS bool) (url.URL, erro
 	if useTLS {
 		u.Scheme = "https"
 	}
-	u.Host = fmt.Sprintf("%s:%d", serviceName, 8080)
+	u.Host = fmt.Sprintf("%s", serviceName)
 
 	return u, nil
 }
