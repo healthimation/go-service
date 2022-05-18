@@ -2,6 +2,7 @@ package service
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 
 	"github.com/healthimation/go-glitch/glitch"
@@ -24,6 +25,7 @@ func ReturnProblem(w http.ResponseWriter, detail, code string, status int) (int,
 
 // WriteProblem will write a json http problem response
 func WriteProblem(w http.ResponseWriter, detail, code string, status int) error {
+	log.Println(code, detail, status)
 	prob := glitch.HTTPProblem{
 		Title:  http.StatusText(status),
 		Detail: detail,
