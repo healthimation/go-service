@@ -102,7 +102,7 @@ func (c *sqsSubscriber) worker(ctx context.Context, wg *sync.WaitGroup, id int) 
 		msgs, err := c.receive(ctx, c.queueUrl, int64(c.maxMsg))
 		if err != nil {
 			// Critical error!
-			log.Printf("worker %d: receive error: %s\n", id, err.Error())
+			//log.Printf("worker %d: receive error: %s\n", id, err.Error())
 			continue
 		}
 
@@ -172,7 +172,7 @@ func (c *sqsSubscriber) receive(ctx context.Context, queueURL string, maxMsg int
 		return nil, fmt.Errorf("receive argument: msgMax valid values: 1 to 10: given %d", maxMsg)
 	}
 
-	var waitTimeSeconds int64 = 60
+	var waitTimeSeconds int64 = 10
 
 	// Must always be above `WaitTimeSeconds` otherwise `ReceiveMessageWithContext`
 	// trigger context timeout error.
