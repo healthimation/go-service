@@ -172,7 +172,7 @@ func (c *sqsSubscriber) receive(ctx context.Context, queueURL string, maxMsg int
 		return nil, fmt.Errorf("receive argument: msgMax valid values: 1 to 10: given %d", maxMsg)
 	}
 
-	var waitTimeSeconds int64 = 10
+	var waitTimeSeconds int64 = 60
 
 	// Must always be above `WaitTimeSeconds` otherwise `ReceiveMessageWithContext`
 	// trigger context timeout error.
