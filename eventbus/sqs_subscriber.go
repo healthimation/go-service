@@ -102,7 +102,7 @@ func (c *sqsSubscriber) worker(ctx context.Context, wg *sync.WaitGroup, id int) 
 		msgs, err := c.receive(ctx, c.queueUrl, int64(c.maxMsg))
 		if err != nil {
 			// Critical error!
-			//log.Printf("worker %d: receive error: %s\n", id, err.Error())
+			log.Printf("worker %d: receive error: %s\n", id, err.Error())
 			continue
 		}
 
@@ -130,10 +130,10 @@ func (c *sqsSubscriber) worker(ctx context.Context, wg *sync.WaitGroup, id int) 
 				}
 				fn, ok := c.handlers[sqsMsg.DetailType]
 				if !ok {
-					c.defaultHandler(sqsMsg.Detail)
+					go c.defaultHandler(sqsMsg.Detail)
 					return
 				}
-				fn(sqsMsg.Detail)
+				go fn(sqsMsg.Detail)
 			}(m1, msgWg)
 		}
 		msgWg.Wait()
