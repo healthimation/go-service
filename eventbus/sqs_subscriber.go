@@ -65,14 +65,14 @@ func (c *sqsSubscriber) Subscribe(key string, fn MessageHandler) {
 }
 
 func (c *sqsSubscriber) Start(ctx context.Context) error {
-	wg := &sync.WaitGroup{}
-	wg.Add(c.maxWorker)
+	//wg := &sync.WaitGroup{}
+	//wg.Add(c.maxWorker)
 
 	for i := 1; i <= c.maxWorker; i++ {
-		go c.worker(ctx, wg, i)
+		go c.worker(ctx, i)
 	}
 
-	wg.Wait()
+	//wg.Wait()
 
 	<-c.exit
 	return nil
@@ -86,8 +86,8 @@ func (c *sqsSubscriber) getQueueUrl(key string) string {
 	return key
 }
 
-func (c *sqsSubscriber) worker(ctx context.Context, wg *sync.WaitGroup, id int) {
-	defer wg.Done()
+func (c *sqsSubscriber) worker(ctx context.Context, id int) {
+	//defer wg.Done()
 
 	log.Printf("worker %d: started\n", id)
 
@@ -112,12 +112,12 @@ func (c *sqsSubscriber) worker(ctx context.Context, wg *sync.WaitGroup, id int) 
 		}
 
 		log.Printf("Received %d messages\n", len(msgs))
-		msgWg := &sync.WaitGroup{}
-		msgWg.Add(len(msgs))
+		//msgWg := &sync.WaitGroup{}
+		//msgWg.Add(len(msgs))
 
 		for _, m1 := range msgs {
-			go func(msg *sqs.Message, w *sync.WaitGroup) {
-				defer w.Done()
+			go func(msg *sqs.Message) { // w *sync.WaitGroup
+				//defer w.Done()
 				defer func() {
 					err := c.delete(ctx, c.queueUrl, *msg.ReceiptHandle)
 					if err != nil {
@@ -136,10 +136,10 @@ func (c *sqsSubscriber) worker(ctx context.Context, wg *sync.WaitGroup, id int) 
 					return
 				}
 				fn(sqsMsg.Detail)
-			}(m1, msgWg)
+			}(m1) // msgWg
 		}
 		log.Println("Waiting for messages to be processed")
-		msgWg.Wait()
+		//msgWg.Wait()
 		log.Println("Messages are processed")
 
 		//if c.config.Type == SyncConsumer {
@@ -176,7 +176,7 @@ func (c *sqsSubscriber) receive(ctx context.Context, queueURL string, maxMsg int
 		return nil, fmt.Errorf("receive argument: msgMax valid values: 1 to 10: given %d", maxMsg)
 	}
 
-	var waitTimeSeconds int64 = 10
+	var waitTimeSeconds int64 = 30
 
 	// Must always be above `WaitTimeSeconds` otherwise `ReceiveMessageWithContext`
 	// trigger context timeout error.
