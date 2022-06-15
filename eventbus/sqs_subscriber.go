@@ -99,6 +99,7 @@ func (c *sqsSubscriber) worker(ctx context.Context, wg *sync.WaitGroup, id int) 
 		default:
 		}
 
+		log.Println("Waiting for messages")
 		msgs, err := c.receive(ctx, c.queueUrl, int64(c.maxMsg))
 		if err != nil {
 			// Critical error!
@@ -110,6 +111,7 @@ func (c *sqsSubscriber) worker(ctx context.Context, wg *sync.WaitGroup, id int) 
 			continue
 		}
 
+		log.Printf("Received %d messages\n", len(msgs))
 		msgWg := &sync.WaitGroup{}
 		msgWg.Add(len(msgs))
 
@@ -136,7 +138,9 @@ func (c *sqsSubscriber) worker(ctx context.Context, wg *sync.WaitGroup, id int) 
 				fn(sqsMsg.Detail)
 			}(m1, msgWg)
 		}
+		log.Println("Waiting for messages to be processed")
 		msgWg.Wait()
+		log.Println("Messages are processed")
 
 		//if c.config.Type == SyncConsumer {
 		//	c.sync(ctx, msgs)
