@@ -130,10 +130,10 @@ func (c *sqsSubscriber) worker(ctx context.Context, wg *sync.WaitGroup, id int) 
 				}
 				fn, ok := c.handlers[sqsMsg.DetailType]
 				if !ok {
-					go c.defaultHandler(sqsMsg.Detail)
+					c.defaultHandler(sqsMsg.Detail)
 					return
 				}
-				go fn(sqsMsg.Detail)
+				fn(sqsMsg.Detail)
 			}(m1, msgWg)
 		}
 		msgWg.Wait()
