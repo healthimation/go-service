@@ -1,17 +1,13 @@
-# github.com/99designs/gqlgen v0.17.22
+# github.com/99designs/gqlgen v0.17.36
 ## explicit
 github.com/99designs/gqlgen/graphql
 # github.com/DataDog/datadog-agent/pkg/obfuscate v0.36.1
-## explicit
 github.com/DataDog/datadog-agent/pkg/obfuscate
 # github.com/DataDog/datadog-go v4.8.3+incompatible
-## explicit
 github.com/DataDog/datadog-go/statsd
 # github.com/DataDog/datadog-go/v5 v5.1.1
-## explicit
 github.com/DataDog/datadog-go/v5/statsd
 # github.com/DataDog/sketches-go v1.4.1
-## explicit
 github.com/DataDog/sketches-go/ddsketch
 github.com/DataDog/sketches-go/ddsketch/encoding
 github.com/DataDog/sketches-go/ddsketch/mapping
@@ -19,11 +15,9 @@ github.com/DataDog/sketches-go/ddsketch/pb/sketchpb
 github.com/DataDog/sketches-go/ddsketch/stat
 github.com/DataDog/sketches-go/ddsketch/store
 # github.com/Microsoft/go-winio v0.5.2
-## explicit
 github.com/Microsoft/go-winio
 github.com/Microsoft/go-winio/pkg/guid
 # github.com/StackExchange/wmi v1.2.1
-## explicit
 github.com/StackExchange/wmi
 # github.com/cespare/xxhash/v2 v2.1.2
 github.com/cespare/xxhash/v2
@@ -42,10 +36,8 @@ github.com/dustin/go-humanize
 github.com/go-ole/go-ole
 github.com/go-ole/go-ole/oleutil
 # github.com/golang/glog v1.0.0
-## explicit
 github.com/golang/glog
 # github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da
-## explicit
 github.com/golang/groupcache/singleflight
 # github.com/google/uuid v1.3.0
 ## explicit
@@ -59,7 +51,7 @@ github.com/husobee/vestigo
 # github.com/justinas/alice v1.2.0
 ## explicit
 github.com/justinas/alice
-# github.com/lib/pq v1.10.6
+# github.com/lib/pq v1.10.9
 ## explicit
 github.com/lib/pq
 github.com/lib/pq/oid
@@ -76,7 +68,6 @@ github.com/opentracing/opentracing-go
 github.com/opentracing/opentracing-go/ext
 github.com/opentracing/opentracing-go/log
 # github.com/patrickmn/go-cache v2.1.0+incompatible
-## explicit
 github.com/patrickmn/go-cache
 # github.com/pborman/uuid v1.2.0
 github.com/pborman/uuid
@@ -90,9 +81,10 @@ github.com/pmezard/go-difflib/difflib
 ## explicit
 github.com/promoboxx/go-auth/src/auth
 # github.com/promoboxx/go-cache v0.0.0-20181213202604-7d4bd5b61d19
-## explicit
 github.com/promoboxx/go-cache/src/cache
 github.com/promoboxx/go-cache/src/storage/memory
+# github.com/promoboxx/go-client v0.0.0-20201021200231-81dacae79bad
+github.com/promoboxx/go-client/client
 # github.com/promoboxx/go-discovery v0.0.0-20181214185844-c169e2d45a22
 ## explicit
 github.com/promoboxx/go-discovery/src/discovery
@@ -102,6 +94,9 @@ github.com/promoboxx/go-glitch/glitch
 # github.com/promoboxx/go-metric-client v0.0.0-20201112163557-b8fada91c33a
 ## explicit
 github.com/promoboxx/go-metric-client/metrics
+# github.com/promoboxx/wallet-service v0.0.0-20231005193208-a36dbef21050
+## explicit
+github.com/promoboxx/wallet-service/src/wallet
 # github.com/shirou/gopsutil v2.18.12+incompatible
 github.com/shirou/gopsutil/internal/common
 github.com/shirou/gopsutil/load
@@ -109,29 +104,26 @@ github.com/shirou/gopsutil/mem
 # github.com/sirupsen/logrus v1.8.1
 ## explicit
 github.com/sirupsen/logrus
-# github.com/stretchr/testify v1.7.1
+# github.com/stretchr/testify v1.8.2
 ## explicit
 github.com/stretchr/testify/assert
 github.com/stretchr/testify/require
 # github.com/tinylib/msgp v1.1.6
-## explicit
 github.com/tinylib/msgp/msgp
-# github.com/vektah/gqlparser/v2 v2.5.1
+# github.com/vektah/gqlparser/v2 v2.5.8
 github.com/vektah/gqlparser/v2/ast
 github.com/vektah/gqlparser/v2/gqlerror
-# golang.org/x/sys v0.0.0-20220811171246-fbc7d0a398ab
+# golang.org/x/sys v0.8.0
 golang.org/x/sys/internal/unsafeheader
 golang.org/x/sys/unix
 golang.org/x/sys/windows
 golang.org/x/sys/windows/registry
 # golang.org/x/time v0.0.0-20220411224347-583f2d630306
-## explicit
 golang.org/x/time/rate
-# golang.org/x/xerrors v0.0.0-20220517211312-f3a8303e98df
-## explicit
+# golang.org/x/xerrors v0.0.0-20220609144429-65e65417b02f
 golang.org/x/xerrors
 golang.org/x/xerrors/internal
-# google.golang.org/protobuf v1.28.0
+# google.golang.org/protobuf v1.30.0
 google.golang.org/protobuf/encoding/prototext
 google.golang.org/protobuf/encoding/protowire
 google.golang.org/protobuf/internal/descfmt

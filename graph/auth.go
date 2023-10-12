@@ -6,6 +6,7 @@ import (
 
 	"github.com/promoboxx/go-auth/src/auth"
 	"github.com/promoboxx/go-service/alice/middleware"
+	"github.com/promoboxx/wallet-service/src/wallet"
 )
 
 // This is a bit of a hack workaround to make the `middleware.GetClaimsFromContext` function return an error,
@@ -20,4 +21,15 @@ func EnsureAuthenticated(ctx context.Context) (c auth.Claim, e error) {
 	}()
 
 	return middleware.GetClaimsFromContext(ctx), nil
+}
+
+func IsAuthorized(claim auth.Claim, authType, ID string) bool {
+	switch authType {
+	case wallet.TypeBusinessWallet:
+		return claim.HasPermission(auth.CheckBusinessID{BusinessID: ID}) || claim.IsInternal()
+	case wallet.TypeBrandWallet:
+		return claim.HasPermission(auth.CheckBrandUUID{BrandUUID: ID}) || claim.IsInternal()
+	default:
+		return claim.IsInternal()
+	}
 }
